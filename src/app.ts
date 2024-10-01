@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cookieParser());
 const corsOptions = {
   credentials: true,
-  // origin: ["https://sports-facility-booking-client-iota.vercel.app", "http://localhost:5173"]
+  origin: ["*"]
 }
 app.use(cors(corsOptions));
 

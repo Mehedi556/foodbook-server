@@ -47,7 +47,7 @@ for start the server.
 
 Important Environment Variables are:
 
-    DATABASE_URL=mongodb+srv://<name>:<password>@cluster0.emwks8.mongodb.net/sports-facility-booking?retryWrites=true&w=majority&appName=Cluster0
+    DATABASE_URL=mongodb+srv://<name>:<password>@cluster0.emwks8.mongodb.net/foodbook?retryWrites=true&w=majority&appName=Cluster0
 
     PORT=5000
 
