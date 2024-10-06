@@ -44,8 +44,6 @@ const loginUser = async (payload:TLogin) => {
         role: userExists?.role
     }
 
-
-    // const accessToken = jwt.sign( jwtPayload, config.jwt_access_secret as string, { expiresIn: '10d' });
     const accessToken = createToken(
         jwtPayload,
         config.jwt_access_secret as string,
@@ -59,7 +57,7 @@ const loginUser = async (payload:TLogin) => {
       );
 
     return {
-        token: accessToken,
+        accessToken,
         refreshToken,
         data: {
             _id: userExists?._id,

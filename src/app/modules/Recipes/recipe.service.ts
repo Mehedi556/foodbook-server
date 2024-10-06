@@ -13,7 +13,7 @@ const getAllRecipesFromDB = async (query: Record<string, unknown>) => {
 
     const recipeQuery = new QueryBuilder(Recipe.find(), query).search(recipeSearchableFields).filter().sort().paginate().fields();
 
-    const result = await recipeQuery.modelQuery;
+    const result = await recipeQuery.modelQuery.populate('author');
     const meta = await recipeQuery.countTotal();
 
     return {

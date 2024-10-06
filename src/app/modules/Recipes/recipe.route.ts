@@ -27,7 +27,7 @@ router.put(
 );
 
 router.get('/', 
-    auth("admin", "user"), 
+    // auth("admin", "user"), 
     RecipeControllers.getAllRecipes);
 
 router.get('/:id', 

@@ -1,6 +1,6 @@
 
 import express from 'express';
-import validateRequest from '../../middlewares/validateRequest';
+import validateRequest, { validateRequestCookies } from '../../middlewares/validateRequest';
 import { changePasswordValidationSchema, forgetPasswordValidationSchema, LoginValidationSchema, refreshTokenValidationSchema, resetPasswordValidationSchema, SignupValidationSchema } from './auth.validation';
 import { AuthControllers } from './auth.controller';
 import auth from '../../middlewares/auth';
@@ -28,7 +28,7 @@ router.post(
 
 router.post(
   '/refresh-token',
-  validateRequest(refreshTokenValidationSchema),
+  validateRequestCookies(refreshTokenValidationSchema),
   AuthControllers.refreshToken,
 );
 
