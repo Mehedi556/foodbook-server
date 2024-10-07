@@ -18,6 +18,7 @@ export const RecipeSchema = z.object({
         tags: z.array(z.string()),
         cookingTime: z.number().positive("Cooking time must be a positive number"),
         isPublished: z.boolean(),
+        isDeleted: z.boolean(),
         postStatus: z.enum(["premium", "non-premium"]),
         author: z.string(),
         rating: z.object({

@@ -1,8 +1,8 @@
 import { ObjectId } from "mongoose";
 
 export interface IComment {
-    author: ObjectId;
-    postId: ObjectId;
+    author: string;
+    postId: string;
     content: string;
 }
 
@@ -21,6 +21,7 @@ export interface IRecipe {
     tags?: string[];
     cookingTime: number;
     isPublished: boolean;
+    isDeleted: boolean;
     postStatus: "premium" | "non-premium";
     author: ObjectId;
     rating: IRating;

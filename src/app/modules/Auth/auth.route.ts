@@ -26,6 +26,12 @@ router.post(
   AuthControllers.loginUser,
 );
 
+router.patch(
+  '/follow',
+  auth('admin', 'user'),
+  AuthControllers.followUser,
+);
+
 router.post(
   '/refresh-token',
   validateRequestCookies(refreshTokenValidationSchema),

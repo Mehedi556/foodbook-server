@@ -9,8 +9,8 @@ export type TSignup = {
       status: 'premium' | 'non-premium';
       expiresIn?: Date;
     };
-    followers: number;
-    following: number;
+    followers: string[];
+    following: string[];
     role: "admin" | "user";
     userStatus: "active" | "blocked";
     isDeleted: boolean;

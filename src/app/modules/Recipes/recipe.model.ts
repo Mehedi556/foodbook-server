@@ -1,16 +1,15 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 import { IComment, IRecipe } from "./recipe.interface";
 
 const CommentSchema = new Schema<IComment>({
     author: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true,
         ref: 'User'
     },
     postId: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true,
-        ref: 'Post'
     },
     content: {
         type: String,
@@ -54,6 +53,11 @@ const RecipeSchema = new Schema<IRecipe>({
         type: Boolean,
         required: true
     },
+    isDeleted: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
     postStatus: {
         type: String,
         enum: ["premium", "non-premium"],
@@ -87,17 +91,10 @@ const RecipeSchema = new Schema<IRecipe>({
         type: [CommentSchema],
         default: []
     },
-    upvotes: {
-        type: [String],
-        default: []
-    },
-    downvotes: {
-        type: [String],
-        default: []
-    }
+    upvotes: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+    downvotes: [{ type: mongoose.Types.ObjectId, ref: 'User' }]
 }, {
     timestamps: true
 });
 
-export const Comment = model<IComment>('Comment', CommentSchema);
 export const Recipe = model<IRecipe>('Recipe', RecipeSchema);

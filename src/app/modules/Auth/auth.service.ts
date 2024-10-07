@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import { TLogin, TSignup } from "./auth.interface";
@@ -32,6 +33,7 @@ const loginUser = async (payload:TLogin) => {
     }
 
     const passwordMatched = await bcrypt.compare(password, userExists?.password)
+    console.log(passwordMatched);
     // matching password. if not matched then throw error.
 
     if (!passwordMatched) {
@@ -40,8 +42,13 @@ const loginUser = async (payload:TLogin) => {
 
     const jwtPayload = {
         _id: userExists?._id,
+        name: userExists?.name,
         email: userExists?.email,
-        role: userExists?.role
+        role: userExists?.role,
+        profilePicture: userExists?.profilePicture,
+        memberStatus: userExists?.memberStatus?.status,
+        userStatus: userExists?.userStatus,
+        isDeleted: userExists?.isDeleted,
     }
 
     const accessToken = createToken(
@@ -89,9 +96,14 @@ const refreshToken = async (token: string) => {
     // checking if the user is already deleted
 
     const jwtPayload = {
-        _id: user._id,
-        email: user.email,
-        role: user.role,
+      _id: user?._id,
+      name: user?.name,
+      email: user?.email,
+      role: user?.role,
+      profilePicture: user?.profilePicture,
+      memberStatus: user?.memberStatus?.status,
+      userStatus: user?.userStatus,
+      isDeleted: user?.isDeleted,
     };
 
     const accessToken = createToken(
@@ -152,13 +164,14 @@ const changePassword = async (userData:JwtPayload, payload: { oldPassword: strin
     return null;
 }
 
-const forgetPassword = async (_id: string) => {
+const forgetPassword = async (email: string) => {
     // checking if the user is exist
-    const user = await User.findById(_id);
+    const user = await User.findOne({email: email});
 
     if (!user) {
       throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
     }
+    // console.log(user);
     // checking if the user is already deleted
     const isDeleted = user?.isDeleted;
   
@@ -174,11 +187,15 @@ const forgetPassword = async (_id: string) => {
     }
 
 
-
     const jwtPayload = {
-      _id: user._id,
-      email: user.email,
-      role: user.role,
+      _id: user?._id,
+        name: user?.name,
+        email: user?.email,
+        role: user?.role,
+        profilePicture: user?.profilePicture,
+        memberStatus: user?.memberStatus?.status,
+        userStatus: user?.userStatus,
+        isDeleted: user?.isDeleted,
     };
   
     const resetToken = createToken(
@@ -188,7 +205,7 @@ const forgetPassword = async (_id: string) => {
     );
 
 
-    const resetUILink = `${config.reset_pass_ui_link}?id=${user._id}&token=${resetToken}`
+    const resetUILink = `${config.reset_pass_ui_link}/reset-password?id=${user._id}&token=${resetToken}`
     sendEmail(user.email, resetUILink)
 }
 
@@ -206,7 +223,7 @@ const resetPassword = async (payload: { _id: string, password: string }, token: 
     throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted !');
   }
 
-//   // checking if the user is blocked
+  // checking if the user is blocked
   const userStatus = user?.userStatus;
 
   if (userStatus === 'blocked') {
@@ -235,10 +252,45 @@ const resetPassword = async (payload: { _id: string, password: string }, token: 
   );
 }
 
+const followUser = async (userId: string, payload: { _id: string }) => {
+  try {
+    const follower = await User.findById(payload._id);
+    if (!follower) {
+      throw new Error('The follower user is not found in the database.');
+    }
+    // console.log(follower);
+
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('The user to follow is not found in the database.');
+    }
+
+    // console.log(user);
+
+    const isFollowing = user.following.some(id => id.toString() === payload._id);
+    // console.log(isFollowing);
+
+    if (isFollowing) {
+      user.following = user.following.filter(id => id.toString() !== payload._id);
+      follower.followers = follower.followers.filter(id => id.toString() !== userId);
+    } else {
+      user.following.push(payload._id);
+      follower.followers.push(userId);
+    }
+
+    await Promise.all([user.save(), follower.save()]);
+
+    return user;
+  } catch (error:any) {
+    throw new Error(`Failed to follow/unfollow the user: ${error.message}`);
+  }
+};
+
 export const AuthServices = {
     createUserIntoDB,
     getUserFromDB,
     loginUser,
+    followUser,
     refreshToken,
     changePassword,
     resetPassword,

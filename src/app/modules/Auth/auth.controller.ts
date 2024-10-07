@@ -3,6 +3,7 @@ import catchAsync from "../../utils/catchAsync";
 import { AuthServices } from "./auth.service";
 import sendResponse from "../../utils/sendResponse";
 import config from "../../config";
+import noDataFoundResponse from "../../utils/noDataFoundResponse";
 
 // This controller created for create new user
 const createUser = catchAsync(async (req, res) => {
@@ -48,6 +49,25 @@ const loginUser = catchAsync(async (req, res) => {
     });
 });
 
+const followUser = catchAsync(async (req, res) => {
+    const result = await AuthServices.followUser(req.user._id, req.body);
+
+    if(!result){
+        noDataFoundResponse(res, {
+            success: false,
+            statusCode: 404,
+            message: "Facing problem to follow this user.",
+            data: result
+        })
+    }
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'User followed by you successfully',
+        data: result
+    });
+});
+
 const refreshToken = catchAsync(async (req, res) => {
     const { refreshToken } = req.cookies;
 
@@ -74,8 +94,8 @@ const changePassword = catchAsync(async (req, res) => {
 });
 
 const forgetPassword = catchAsync(async (req, res) => {
-    const _id = req.body._id;
-    const result = await AuthServices.forgetPassword(_id)
+    const email = req.body.email;
+    const result = await AuthServices.forgetPassword(email)
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -101,6 +121,7 @@ const resetPassword = catchAsync(async (req, res) => {
 export const AuthControllers = {
     createUser,
     loginUser,
+    followUser,
     refreshToken,
     getUser,
     changePassword,

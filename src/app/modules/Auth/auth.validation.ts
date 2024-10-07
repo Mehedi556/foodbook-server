@@ -11,8 +11,8 @@ export const SignupValidationSchema = z.object({
       status: z.enum([ "premium" , "non-premium" ]),
       expiresIn: z.date().optional()
     }),
-    followers: z.number(),
-    following: z.number(),
+    followers: z.array(z.string()),
+    following: z.array(z.string()),
     role: z.enum([ "admin" , "user" ]),
     userStatus: z.enum(["active" , "blocked"]),
     isDeleted: z.boolean(),
@@ -46,8 +46,8 @@ export const changePasswordValidationSchema = z.object({
 
 export const forgetPasswordValidationSchema = z.object({
   body: z.object({
-    _id: z.string({
-      required_error: 'User id is required!'
+    email: z.string({
+      required_error: 'User email is required!'
     })
   })
 })

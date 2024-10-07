@@ -1,5 +1,5 @@
 
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { TSignup } from "./auth.interface";
 import bcrypt from 'bcrypt';
 import config from "../../config";
@@ -43,14 +43,16 @@ const signupSchema = new Schema<TSignup>({
         required: true,
         default: "user"
     },
-    following: {
-        type: Number,
-        required: true,
-    },
-    followers: {
-        type: Number,
-        required: true,
-    },
+    following: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: []
+    }],
+    followers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: []
+    }],
     userStatus: {
         type: String,
         enum: [ "active" , "blocked"],

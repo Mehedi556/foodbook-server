@@ -26,9 +26,25 @@ router.put(
     RecipeControllers.updateRecipe,
 );
 
+router.patch(
+    '/update-vote',
+    auth("admin", "user"),
+    RecipeControllers.updateVote,
+);
+
+router.patch(
+    '/add-comment',
+    auth("admin", "user"),
+    RecipeControllers.addComment,
+);
+
 router.get('/', 
     // auth("admin", "user"), 
     RecipeControllers.getAllRecipes);
+
+router.get('/my-recipes/:id', 
+    // auth("admin", "user"), 
+    RecipeControllers.getMyRecipes);
 
 router.get('/:id', 
     auth("admin", "user"), 
