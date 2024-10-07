@@ -101,6 +101,29 @@ const updateVoteIntoDB = async (payload: { recipeId: string, vote: string, voter
     return recipe;
 };
 
+const addCommentIntoDB = async ( payload: { author:string, content: string, postId: string }) => {
+
+    try {
+        const user = await User.findById(payload.author);
+        if (!user) {
+            throw new Error('This user is not found in the database for add comment.');
+        }
+
+        const recipe = await Recipe.findById(payload.postId);
+        if (!recipe) {
+            throw new Error('Recipe not found in the database.');
+        }
+
+        recipe.comments.push({...payload});
+
+        await recipe.save();
+
+        return recipe;
+    } catch (error) {
+        throw new Error('Failed to add comment to recipe');
+    }
+};
+
 
 
 const deleteRecipeFromDB = async (id: string) => {
