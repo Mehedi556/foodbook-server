@@ -50,7 +50,56 @@ const updateRecipeIntoDB = async (
     return result;
 };
 
+const updateVoteIntoDB = async (payload: { recipeId: string, vote: string, voterId: string }) => {
+    const user = await User.findById(payload.voterId);
+    if (!user) {
+        throw new Error('This user is not found in the database for updating vote.');
+    }
 
+    const recipe = await Recipe.findById(payload.recipeId);
+    if (!recipe) {
+        throw new Error('Recipe not found in the database.');
+    }
+
+    const { vote, voterId } = payload;
+
+    // Cast to Types.ObjectId[] temporarily to avoid type error
+    const upvotes = recipe.upvotes as unknown as mongoose.Types.ObjectId[];
+    const downvotes = recipe.downvotes as unknown as mongoose.Types.ObjectId[];
+
+    const voterObjectId = new mongoose.Types.ObjectId(voterId);
+
+    const removeFromArray = (arr: mongoose.Types.ObjectId[], id: mongoose.Types.ObjectId) => {
+        return arr.filter(item => !item.equals(id)); // Use .equals() for ObjectId comparison
+    };
+
+    if (vote === "up-vote") {
+        if (upvotes.some(upvote => upvote.equals(voterObjectId))) {
+            // Remove the voter ID from upvotes if it already exists
+            recipe.upvotes = removeFromArray(upvotes, voterObjectId) as unknown as mongoose.Schema.Types.ObjectId[];
+        } else {
+            if (downvotes.some(downvote => downvote.equals(voterObjectId))) {
+                // Remove the voter ID from downvotes if found
+                recipe.downvotes = removeFromArray(downvotes, voterObjectId) as unknown as mongoose.Schema.Types.ObjectId[];
+            }
+            recipe.upvotes.push(voterObjectId as unknown as mongoose.Schema.Types.ObjectId);
+        }
+    } else if (vote === "down-vote") {
+        if (downvotes.some(downvote => downvote.equals(voterObjectId))) {
+            // Remove the voter ID from downvotes if it already exists
+            recipe.downvotes = removeFromArray(downvotes, voterObjectId) as unknown as mongoose.Schema.Types.ObjectId[];
+        } else {
+            if (upvotes.some(upvote => upvote.equals(voterObjectId))) {
+                // Remove the voter ID from upvotes if found
+                recipe.upvotes = removeFromArray(upvotes, voterObjectId) as unknown as mongoose.Schema.Types.ObjectId[];
+            }
+            recipe.downvotes.push(voterObjectId as unknown as mongoose.Schema.Types.ObjectId);
+        }
+    }
+
+    await recipe.save();
+    return recipe;
+};
 
 
 
