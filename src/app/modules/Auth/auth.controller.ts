@@ -41,6 +41,16 @@ const getUser = catchAsync(async (req, res) => {
     });
 });
 
+const getAllUsers = catchAsync(async (req, res) => {
+    const result = await AuthServices.getAllUserFromDB();
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Users retrieved successfully',
+        data: result
+    });
+});
+
   // This controller created for login
 const loginUser = catchAsync(async (req, res) => {
     const result = await AuthServices.loginUser(req.body);
@@ -127,6 +137,47 @@ const resetPassword = catchAsync(async (req, res) => {
     });
 })
 
+const blockUser = catchAsync(async (req, res) => {
+    // console.log(req.body);
+    const result = await AuthServices.blockUserFromDB(req.body._id);
+
+    if(!result){
+    noDataFoundResponse(res, {
+        success: false,
+        statusCode: 404,
+        message: "No Data Found",
+        data: result
+    })
+    }else {
+        sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'User blocked successfully',
+        data: result,
+    });
+    }
+});
+const deleteUser = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const result = await AuthServices.deleteUserFromDB(id);
+
+    if(!result){
+    noDataFoundResponse(res, {
+        success: false,
+        statusCode: 404,
+        message: "No Data Found",
+        data: result
+    })
+    }else {
+        sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'User deleted successfully',
+        data: result,
+    });
+    }
+});
+
 
 export const AuthControllers = {
     createUser,
@@ -135,7 +186,11 @@ export const AuthControllers = {
     followUser,
     refreshToken,
     getUser,
+    getAllUsers,
     changePassword,
     forgetPassword,
-    resetPassword
+    resetPassword,
+    blockUser,
+    deleteUser,
+
 };

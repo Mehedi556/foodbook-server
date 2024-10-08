@@ -15,9 +15,15 @@ router.post(
 );
 
 router.get(
+  '/all-users',
+  AuthControllers.getAllUsers,
+);
+
+router.get(
   '/:id',
   AuthControllers.getUser,
 );
+
 
 router.patch(
   '/:id',
@@ -43,6 +49,10 @@ router.post(
   AuthControllers.refreshToken,
 );
 
+router.put('/block-user',
+   auth('admin'), 
+   AuthControllers.blockUser)
+
 router.post(
   '/change-password',
   auth('admin', 'user'),
@@ -50,7 +60,13 @@ router.post(
   AuthControllers.changePassword,
 );
 
+
+
 router.post('/forget-password', validateRequest(forgetPasswordValidationSchema), AuthControllers.forgetPassword)
 router.post('/reset-password', validateRequest(resetPasswordValidationSchema), AuthControllers.resetPassword)
+
+
+
+router.delete('/:id', auth('admin'), AuthControllers.deleteUser)
 
 export const AuthRoutes = router;

@@ -28,6 +28,11 @@ const getUserFromDB = async (_id:string) => {
     return result;
 }
 
+const getAllUserFromDB = async () => {
+    const result = await User.find({isDeleted: false});
+    return result;
+}
+
 // this service is created for login user
 const loginUser = async (payload:TLogin) => {
     const { email, password } = payload;
@@ -293,14 +298,43 @@ const followUser = async (userId: string, payload: { _id: string }) => {
   }
 };
 
+const blockUserFromDB = async (id: string) => {
+  const user = await User.findById(id);
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  const newStatus = user.userStatus === 'active' ? 'blocked' : 'active';
+
+  const result = await User.findByIdAndUpdate(
+    id,
+    { userStatus: newStatus },
+    { new: true }
+  );
+
+  return result;
+};
+
+const deleteUserFromDB = async (id: string) => {
+  const result = await User.findByIdAndUpdate(id, { isDeleted: true }, {
+      new: true,
+  },
+  );
+  return result;
+};
+
 export const AuthServices = {
     createUserIntoDB,
     updateUserIntoDB,
     getUserFromDB,
+    getAllUserFromDB,
     loginUser,
     followUser,
     refreshToken,
     changePassword,
     resetPassword,
-    forgetPassword
+    forgetPassword,
+    blockUserFromDB,
+    deleteUserFromDB
 }
