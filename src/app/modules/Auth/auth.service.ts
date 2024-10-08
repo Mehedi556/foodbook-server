@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
-import { TLogin, TSignup } from "./auth.interface";
+import { TLogin, TSignup, TUserForUpdate } from "./auth.interface";
 import { User } from "./auth.model";
 import bcrypt from 'bcrypt';
 import { JwtPayload } from 'jsonwebtoken'
@@ -14,6 +14,13 @@ import { sendEmail } from "../../utils/sendEmail";
 const createUserIntoDB = async (payload:TSignup) => {
     const newUser = await User.create(payload);
     return newUser;
+}
+
+const updateUserIntoDB = async (payload:TUserForUpdate, id:string) => {
+    const updateUser = await User.findByIdAndUpdate(id, payload, {
+      new: true,
+  });
+    return updateUser;
 }
 
 const getUserFromDB = async (_id:string) => {
@@ -288,6 +295,7 @@ const followUser = async (userId: string, payload: { _id: string }) => {
 
 export const AuthServices = {
     createUserIntoDB,
+    updateUserIntoDB,
     getUserFromDB,
     loginUser,
     followUser,

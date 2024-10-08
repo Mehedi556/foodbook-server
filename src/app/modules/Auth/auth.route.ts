@@ -19,6 +19,11 @@ router.get(
   AuthControllers.getUser,
 );
 
+router.patch(
+  '/:id',
+  AuthControllers.updateUser,
+);
+
 // this route is created for login user
 router.post(
   '/login',

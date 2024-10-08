@@ -20,6 +20,16 @@ const createUser = catchAsync(async (req, res) => {
         },
     });
 });
+const updateUser = catchAsync(async (req, res) => {
+    const id = req?.params?.id
+    const result = await AuthServices.updateUserIntoDB(req.body, id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'User updated successfully',
+        data: result,
+    });
+});
 
 const getUser = catchAsync(async (req, res) => {
     const result = await AuthServices.getUserFromDB(req.params.id);
@@ -120,6 +130,7 @@ const resetPassword = catchAsync(async (req, res) => {
 
 export const AuthControllers = {
     createUser,
+    updateUser,
     loginUser,
     followUser,
     refreshToken,
