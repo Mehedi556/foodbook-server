@@ -6,6 +6,7 @@ import noDataFoundResponse from "../../utils/noDataFoundResponse";
 
 // controller for create recipe
 const createRecipe = catchAsync(async (req, res) => {
+    console.log(req.body);
     const result = await RecipeServices.createRecipeIntoDB(req.body);
 
     sendResponse(res, {
@@ -71,8 +72,7 @@ const getSingleRecipe = catchAsync(async (req, res) => {
 
 // This controller is for update Recipe.
 const updateRecipe = catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const result = await RecipeServices.updateRecipeIntoDB(id, req.body);
+    const result = await RecipeServices.updateRecipeIntoDB(req.body);
     
     if(!result){
         noDataFoundResponse(res, {

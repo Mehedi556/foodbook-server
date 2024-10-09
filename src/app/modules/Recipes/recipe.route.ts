@@ -18,7 +18,7 @@ router.post(
 
 
 router.put(
-    '/:id',
+    '/',
     auth("admin", "user"),
     validateRequest(
         UpdateRecipeSchema

@@ -37,11 +37,10 @@ const getSingleRecipeFromDB = async (id: string) => {
 };
 
 const updateRecipeIntoDB = async (
-    id: string,
-    payload: Partial<IRecipe>,
+    payload: Partial<IRecipe>
 ) => {
     const result = await Recipe.findOneAndUpdate(
-    { _id: id },
+    { _id: payload?._id },
     payload,
     {
         new: true,

@@ -13,13 +13,13 @@ interface IRating {
 }
 
 export interface IRecipe {
+    _id?: string;
     title: string;
     description: string;
     ingredients: string[];
     instructions: string;
     image: string[];
     tags?: string[];
-    cookingTime: number;
     isPublished: boolean;
     isDeleted: boolean;
     postStatus: "premium" | "non-premium";
