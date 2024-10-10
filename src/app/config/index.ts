@@ -16,4 +16,5 @@ export default {
     signature_key: process.env.SIGNATURE_KEY,
     payment_url: process.env.PAYMENT_URL,
     reset_pass_ui_link: process.env.RESET_PASS_UI_LINK,
+    client_site_url: process.env.CLIENT_SITE_URL,
 }
