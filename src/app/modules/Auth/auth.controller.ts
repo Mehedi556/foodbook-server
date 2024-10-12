@@ -7,6 +7,7 @@ import noDataFoundResponse from "../../utils/noDataFoundResponse";
 
 // This controller created for create new user
 const createUser = catchAsync(async (req, res) => {
+    console.log(req.body);
     const result = await AuthServices.createUserIntoDB(req.body);
     sendResponse(res, {
         statusCode: httpStatus.OK,

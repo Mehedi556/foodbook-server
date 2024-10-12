@@ -12,6 +12,8 @@ import { sendEmail } from "../../utils/sendEmail";
 
 // this service is created for create new user
 const createUserIntoDB = async (payload:TSignup) => {
+    const payloadData = payload;
+    payloadData.memberStatus.expiresIn = new Date()
     const newUser = await User.create(payload);
     return newUser;
 }
@@ -58,7 +60,7 @@ const loginUser = async (payload:TLogin) => {
         email: userExists?.email,
         role: userExists?.role,
         profilePicture: userExists?.profilePicture,
-        memberStatus: userExists?.memberStatus?.status,
+        memberStatus: userExists?.memberStatus,
         userStatus: userExists?.userStatus,
         isDeleted: userExists?.isDeleted,
     }
@@ -113,7 +115,7 @@ const refreshToken = async (token: string) => {
       email: user?.email,
       role: user?.role,
       profilePicture: user?.profilePicture,
-      memberStatus: user?.memberStatus?.status,
+      memberStatus: user?.memberStatus,
       userStatus: user?.userStatus,
       isDeleted: user?.isDeleted,
     };
@@ -205,7 +207,7 @@ const forgetPassword = async (email: string) => {
         email: user?.email,
         role: user?.role,
         profilePicture: user?.profilePicture,
-        memberStatus: user?.memberStatus?.status,
+        memberStatus: user?.memberStatus,
         userStatus: user?.userStatus,
         isDeleted: user?.isDeleted,
     };

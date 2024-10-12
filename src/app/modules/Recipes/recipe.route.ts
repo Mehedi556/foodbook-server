@@ -42,13 +42,15 @@ router.get('/',
     // auth("admin", "user"), 
     RecipeControllers.getAllRecipes);
 
+router.get('/:id', 
+    // auth("admin", "user"), 
+    RecipeControllers.getSingleRecipe);
+
 router.get('/my-recipes/:id', 
     // auth("admin", "user"), 
     RecipeControllers.getMyRecipes);
 
-router.get('/:id', 
-    auth("admin", "user"), 
-    RecipeControllers.getSingleRecipe);
+
 
 router.delete('/:id', auth("admin", "user"), RecipeControllers.deleteRecipe);
 

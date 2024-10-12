@@ -101,7 +101,7 @@ const confirmationController = async (req: Request, res: Response) => {
 </p>
         <p><span class="highlight">Name:</span> ${result?.name}</p>
         <p><span class="highlight">Email:</span> ${result?.email}</p>
-        <a href="http://localhost:3000/${result?.role}" class="return-home">Go to Dashboard</a>
+        <a href="http://localhost:3000/login" class="return-home">Please login again for access premium content</a>
     </div>
 </body>
 

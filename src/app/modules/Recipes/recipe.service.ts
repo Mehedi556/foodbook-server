@@ -18,6 +18,7 @@ const getAllRecipesFromDB = async (query: Record<string, unknown>) => {
     const recipeQuery = new QueryBuilder(Recipe.find(), query).search(recipeSearchableFields).filter().sort().paginate().fields();
 
     const result = await recipeQuery.modelQuery.populate('author').populate('comments.author');
+    
     const meta = await recipeQuery.countTotal();
 
     return {
@@ -32,7 +33,7 @@ const getMyRecipesFromDB = async (id:string) => {
 };
 
 const getSingleRecipeFromDB = async (id: string) => {
-    const result = await Recipe.findById({_id: id});
+    const result = await Recipe.findById({_id: id}).populate('author').populate('comments.author');
     return result;
 };
 
@@ -69,12 +70,12 @@ const updateVoteIntoDB = async (payload: { recipeId: string, vote: string, voter
     const voterObjectId = new mongoose.Types.ObjectId(voterId);
 
     const removeFromArray = (arr: mongoose.Types.ObjectId[], id: mongoose.Types.ObjectId) => {
-        return arr.filter(item => !item.equals(id)); // Use .equals() for ObjectId comparison
+        return arr.filter(item => !item.equals(id));
     };
 
     if (vote === "up-vote") {
         if (upvotes.some(upvote => upvote.equals(voterObjectId))) {
-            // Remove the voter ID from upvotes if it already exists
+            
             recipe.upvotes = removeFromArray(upvotes, voterObjectId) as unknown as mongoose.Schema.Types.ObjectId[];
         } else {
             if (downvotes.some(downvote => downvote.equals(voterObjectId))) {
@@ -85,7 +86,6 @@ const updateVoteIntoDB = async (payload: { recipeId: string, vote: string, voter
         }
     } else if (vote === "down-vote") {
         if (downvotes.some(downvote => downvote.equals(voterObjectId))) {
-            // Remove the voter ID from downvotes if it already exists
             recipe.downvotes = removeFromArray(downvotes, voterObjectId) as unknown as mongoose.Schema.Types.ObjectId[];
         } else {
             if (upvotes.some(upvote => upvote.equals(voterObjectId))) {
