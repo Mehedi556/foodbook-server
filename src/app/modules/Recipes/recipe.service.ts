@@ -123,6 +123,65 @@ const addCommentIntoDB = async ( payload: { author:string, content: string, post
     }
 };
 
+const updateCommentIntoDB = async (
+    payload: any
+) => {
+    const { postId, commentId, content } = payload;
+    try {
+        const post = await Recipe.findById(postId);
+    
+    if (!post) {
+        throw new Error("Recipe not found.");
+    }
+
+    const comment = post.comments.find(
+        (comment: any) => comment._id.toString() === commentId
+    );
+
+    if (!comment) {
+        throw new Error("Comment not found for the given author.");
+    }
+
+    comment.content = content;
+
+    await post.save();
+
+    return post;
+
+    } catch (error:any) {
+        throw new Error(`Failed to update comment: ${error.message}`);
+    }
+
+};
+
+const deleteCommentFromDB = async (payload:any) => {
+    const { postId, commentId } = payload;
+
+try {
+    const post = await Recipe.findById(postId);
+
+    if (!post) {
+        throw new Error("Post not found.");
+    }
+
+    const commentIndex = post.comments.findIndex(
+        (comment: any) => comment._id.toString() === commentId
+    );
+
+    if (commentIndex === -1) {
+        throw new Error("Comment not found.");
+    }
+
+    post.comments.splice(commentIndex, 1);
+
+    await post.save();
+
+    return post;
+} catch (error:any) {
+    throw new Error(`Failed to delete comment: ${error.message}`);
+}
+};
+
 
 
 const deleteRecipeFromDB = async (id: string) => {
@@ -140,6 +199,8 @@ export const RecipeServices = {
     getSingleRecipeFromDB,
     updateRecipeIntoDB,
     addCommentIntoDB,
+    updateCommentIntoDB,
+    deleteCommentFromDB,
     updateVoteIntoDB,
     deleteRecipeFromDB
 };

@@ -38,6 +38,18 @@ router.patch(
     RecipeControllers.addComment,
 );
 
+router.patch(
+    '/update-comment',
+    auth("admin", "user"),
+    RecipeControllers.updateComment,
+);
+
+router.put(
+    '/delete-comment',
+    auth("admin", "user"),
+    RecipeControllers.deleteComment,
+);
+
 router.get('/', 
     // auth("admin", "user"), 
     RecipeControllers.getAllRecipes);

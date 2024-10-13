@@ -90,6 +90,7 @@ const updateRecipe = catchAsync(async (req, res) => {
         });
     }
 });
+
 const updateVote = catchAsync(async (req, res) => {
     const result = await RecipeServices.updateVoteIntoDB(req.body);
     
@@ -109,6 +110,7 @@ const updateVote = catchAsync(async (req, res) => {
         });
     }
 });
+
 const addComment = catchAsync(async (req, res) => {
     const result = await RecipeServices.addCommentIntoDB(req.body);
     
@@ -126,6 +128,46 @@ const addComment = catchAsync(async (req, res) => {
             message: 'Comment added successfully',
             data: result,
         });
+    }
+});
+
+const updateComment = catchAsync(async (req, res) => {
+    const result = await RecipeServices.updateCommentIntoDB(req.body);
+    
+    if(!result){
+        noDataFoundResponse(res, {
+            success: false,
+            statusCode: 404,
+            message: "No Data Found",
+            data: result
+        })
+    } else{
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: 'Comment updated successfully',
+            data: result,
+        });
+    }
+});
+
+const deleteComment = catchAsync(async (req, res) => {
+    const result = await RecipeServices.deleteCommentFromDB(req.body);
+
+    if(!result){
+    noDataFoundResponse(res, {
+        success: false,
+        statusCode: 404,
+        message: "No Data Found",
+        data: result
+    })
+    }else {
+        sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Comment deleted successfully',
+        data: result,
+    });
     }
 });
 
@@ -157,6 +199,8 @@ export const RecipeControllers = {
     getSingleRecipe,
     updateRecipe,
     addComment,
+    updateComment,
+    deleteComment,
     deleteRecipe,
     updateVote
 }
