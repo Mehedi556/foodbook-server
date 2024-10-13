@@ -55,11 +55,11 @@ router.get('/',
     RecipeControllers.getAllRecipes);
 
 router.get('/:id', 
-    // auth("admin", "user"), 
+    auth("admin", "user"), 
     RecipeControllers.getSingleRecipe);
 
 router.get('/my-recipes/:id', 
-    // auth("admin", "user"), 
+    auth("admin", "user"), 
     RecipeControllers.getMyRecipes);
 
 

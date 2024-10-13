@@ -71,6 +71,8 @@ const loginUser = catchAsync(async (req, res) => {
 });
 
 const followUser = catchAsync(async (req, res) => {
+    console.log(req?.user?._id);
+    console.log(req?.body);
     const result = await AuthServices.followUser(req.user._id, req.body);
 
     if(!result){
@@ -115,6 +117,7 @@ const changePassword = catchAsync(async (req, res) => {
 });
 
 const forgetPassword = catchAsync(async (req, res) => {
+    console.log(req.body);
     const email = req.body.email;
     const result = await AuthServices.forgetPassword(email)
 

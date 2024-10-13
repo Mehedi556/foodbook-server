@@ -8,6 +8,11 @@ import { Recipe } from "./recipe.model";
 
 
 const createRecipeIntoDB = async (payload: IRecipe) => {
+    const userExists = await User.findById(payload?.author)
+
+    if(userExists?.userStatus == 'blocked'){
+        throw new Error("You can't post by this account, because this account is blocked by admin!")
+    }
     const result = await Recipe.create(payload);
     return result;
 };
@@ -28,7 +33,7 @@ const getAllRecipesFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getMyRecipesFromDB = async (id:string) => {
- const result = await Recipe.find({ author: id}).populate('author').populate('comments.author');
+ const result = await Recipe.find({ author: id, isDeleted: false}).populate('author').populate('comments.author');
  return result;
 };
 
@@ -187,8 +192,8 @@ try {
 const deleteRecipeFromDB = async (id: string) => {
     const result = await Recipe.findByIdAndUpdate(id, { isDeleted: true }, {
         new: true,
-    },
-    );
+    });
+
     return result;
 };
 

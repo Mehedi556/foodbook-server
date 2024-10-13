@@ -46,8 +46,12 @@ const loginUser = async (payload:TLogin) => {
         throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
     }
 
+    if (userExists.isDeleted == true) {
+        throw new AppError(httpStatus.NOT_FOUND, 'You cant access by this account. Because this account is deleted by admin!');
+    }
+
+
     const passwordMatched = await bcrypt.compare(password, userExists?.password)
-    console.log(passwordMatched);
     // matching password. if not matched then throw error.
 
     if (!passwordMatched) {

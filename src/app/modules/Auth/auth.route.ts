@@ -16,17 +16,20 @@ router.post(
 
 router.get(
   '/all-users',
+  auth('admin'),
   AuthControllers.getAllUsers,
 );
 
 router.get(
   '/:id',
+  auth('admin', 'user'),
   AuthControllers.getUser,
 );
 
 
 router.patch(
   '/:id',
+  auth('admin', 'user'),
   AuthControllers.updateUser,
 );
 
@@ -37,7 +40,7 @@ router.post(
   AuthControllers.loginUser,
 );
 
-router.patch(
+router.put(
   '/follow',
   auth('admin', 'user'),
   AuthControllers.followUser,
